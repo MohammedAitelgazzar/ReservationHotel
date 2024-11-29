@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -23,5 +25,6 @@ public class Client {
     private String telephone;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnoreProperties("client")
     private List<Reservation> reservations;
 }
