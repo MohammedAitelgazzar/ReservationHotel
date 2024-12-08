@@ -16,7 +16,9 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Temporal(TemporalType.DATE)
     private Date dateDebut;
+    @Temporal(TemporalType.DATE)
     private Date dateFin;
     private String preferences;
     @ManyToOne

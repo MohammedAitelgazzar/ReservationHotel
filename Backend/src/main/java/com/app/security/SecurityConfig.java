@@ -27,18 +27,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable()) // Désactive le CSRF pour API REST
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configure CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**", "/api/login",
-                                "/api/register", "/api/reservations/**",
-                                "/api/chambres", "/api/clients").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/public/", "/api/login",
+                                "/api/register", "/api/reservations/",
+                                "/api/chambres", "/api/clients",
+                                "/services/", "/services/ws/","/graphiql/","/graphql/").permitAll() // Permet l'accès sans authentification
+                        //.anyRequest().authenticated() // Toute autre requête nécessite une authentification
+                        .anyRequest().permitAll()
                 )
-                .userDetailsService(customUserDetailsService)
-                // Remove form login since we're using REST endpoints
+
+                .userDetailsService(customUserDetailsService) // Utilise CustomUserDetailsService pour authentification utilisateur
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Configure session comme sans état
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -51,14 +53,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Your React app URL
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // URL de votre application React
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Autoriser toutes les méthodes HTTP
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/", configuration);
         return source;
     }
 
