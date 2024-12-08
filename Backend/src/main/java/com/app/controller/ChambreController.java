@@ -10,26 +10,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/chambres")
+@CrossOrigin("*")
 public class ChambreController {
 
-    @Autowired
-    private ChambreRepository chambreRepository;
+    private final ChambreRepository chambreRepository;
 
-    // Get all rooms
+    @Autowired
+    public ChambreController(ChambreRepository chambreRepository) {
+        this.chambreRepository = chambreRepository;
+    }
+
     @GetMapping
     public List<Chambre> getAllChambres() {
         return chambreRepository.findAll();
     }
 
-    // Get room by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Chambre> getChambreById(@PathVariable Integer id) {
+    public ResponseEntity<Chambre> getChambreById(@PathVariable Long id) {
         return chambreRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Create new room
     @PostMapping
     public ResponseEntity<Chambre> createChambre(@RequestBody Chambre chambre) {
         try {
@@ -40,29 +42,26 @@ public class ChambreController {
         }
     }
 
-    // Update room
     @PutMapping("/{id}")
-    public ResponseEntity<Chambre> updateChambre(@PathVariable Integer id, 
-                                               @RequestBody Chambre chambreDetails) {
+    public ResponseEntity<Chambre> updateChambre(@PathVariable Long id, @RequestBody Chambre chambreDetails) {
         return chambreRepository.findById(id)
                 .map(existingChambre -> {
                     existingChambre.setPrix(chambreDetails.getPrix());
-                    existingChambre.setDisponible(chambreDetails.isDisponible());
+                    existingChambre.setDisponible(chambreDetails.getDisponible());
                     existingChambre.setType(chambreDetails.getType());
+                    
                     Chambre updatedChambre = chambreRepository.save(existingChambre);
                     return ResponseEntity.ok(updatedChambre);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Delete room
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteChambre(@PathVariable Integer id) {
-        return chambreRepository.findById(id)
-                .map(chambre -> {
-                    chambreRepository.delete(chambre);
-                    return ResponseEntity.ok().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deleteChambre(@PathVariable Long id) {
+        if (chambreRepository.existsById(id)) {
+            chambreRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
-} 
+}

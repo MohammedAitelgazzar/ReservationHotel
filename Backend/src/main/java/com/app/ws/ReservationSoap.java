@@ -6,6 +6,7 @@ import java.util.List;
 import com.app.entities.Chambre;
 import com.app.entities.Client;
 import com.app.entities.Reservation;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ import com.app.dao.ReservationRepository;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Component
 @WebService(serviceName = "ReservationService")

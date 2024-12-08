@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.app.grpc.stubs";
+
+package reservation;
+
+service ReservationGrpcService {
+  rpc getAllReservations (GetAllReservationsRequest) returns (GetAllReservationsResponse) {}
+  rpc getReservationById (GetReservationByIdRequest) returns (GetReservationByIdResponse) {}
+  rpc saveReservation (SaveReservationRequest) returns (SaveReservationResponse) {}
+  rpc deleteReservation (DeleteReservationRequest) returns (DeleteReservationResponse) {}
+}
+
+message Reservation {
+  int64 id = 1;
+  string dateDebut = 2;
+  string dateFin = 3;
+  string preferences = 4;
+  int64 clientId = 5;
+  int64 chambreId = 6;
+}
+
+message GetAllReservationsRequest {}
+
+message GetAllReservationsResponse {
+  repeated Reservation reservations = 1;
+}
+
+message GetReservationByIdRequest {
+  int64 id = 1;
+}
+
+message GetReservationByIdResponse {
+  Reservation reservation = 1;
+}
+
+message SaveReservationRequest {
+  Reservation reservation = 1;
+}
+
+message SaveReservationResponse {
+  Reservation reservation = 1;
+}
+
+message DeleteReservationRequest {
+  int64 id = 1;
+}
+
+message DeleteReservationResponse {
+  bool success = 1;
+  string message = 2;
+}
