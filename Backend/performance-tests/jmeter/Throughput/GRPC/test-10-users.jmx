@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="gRPC API Test Plan - 10 Users">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="10 Users Group">
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">100</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">60</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <!-- CREATE -->
+        <kg.apc.jmeter.samplers.GRPCSampler guiclass="kg.apc.jmeter.samplers.GRPCSamplerGui" testclass="kg.apc.jmeter.samplers.GRPCSampler" testname="Create Reservation gRPC">
+          <stringProp name="hostname">localhost</stringProp>
+          <stringProp name="port">9090</stringProp>
+          <stringProp name="protoFile">proto/reservation.proto</stringProp>
+          <stringProp name="serviceName">ReservationService</stringProp>
+          <stringProp name="methodName">CreateReservation</stringProp>
+          <stringProp name="request">{
+            "preferences": "Test reservation ${__threadNum}",
+            "clientId": 1,
+            "chambreId": 1,
+            "dateDebut": "2024-12-10",
+            "dateFin": "2024-12-12"
+          }</stringProp>
+          <stringProp name="deadline">5000</stringProp>
+          <boolProp name="useTls">false</boolProp>
+        </kg.apc.jmeter.samplers.GRPCSampler>
+        <hashTree>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor">
+            <stringProp name="JSONPostProcessor.referenceNames">reservationId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+        </hashTree>
+
+        <!-- Constant Timer -->
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait">
+          <stringProp name="ConstantTimer.delay">1000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+
+        <!-- GET ONE -->
+        <kg.apc.jmeter.samplers.GRPCSampler guiclass="kg.apc.jmeter.samplers.GRPCSamplerGui" testclass="kg.apc.jmeter.samplers.GRPCSampler" testname="Get Reservation gRPC">
+          <stringProp name="hostname">localhost</stringProp>
+          <stringProp name="port">9090</stringProp>
+          <stringProp name="protoFile">proto/reservation.proto</stringProp>
+          <stringProp name="serviceName">ReservationService</stringProp>
+          <stringProp name="methodName">GetReservation</stringProp>
+          <stringProp name="request">{
+            "id": ${reservationId}
+          }</stringProp>
+          <stringProp name="deadline">5000</stringProp>
+          <boolProp name="useTls">false</boolProp>
+        </kg.apc.jmeter.samplers.GRPCSampler>
+        <hashTree/>
+
+        <!-- Constant Timer -->
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait">
+          <stringProp name="ConstantTimer.delay">1000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+
+        <!-- GET ALL -->
+        <kg.apc.jmeter.samplers.GRPCSampler guiclass="kg.apc.jmeter.samplers.GRPCSamplerGui" testclass="kg.apc.jmeter.samplers.GRPCSampler" testname="Get All Reservations gRPC">
+          <stringProp name="hostname">localhost</stringProp>
+          <stringProp name="port">9090</stringProp>
+          <stringProp name="protoFile">proto/reservation.proto</stringProp>
+          <stringProp name="serviceName">ReservationService</stringProp>
+          <stringProp name="methodName">GetReservations</stringProp>
+          <stringProp name="request">{}</stringProp>
+          <stringProp name="deadline">5000</stringProp>
+          <boolProp name="useTls">false</boolProp>
+        </kg.apc.jmeter.samplers.GRPCSampler>
+        <hashTree/>
+
+        <!-- Constant Timer -->
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait">
+          <stringProp name="ConstantTimer.delay">1000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+
+        <!-- UPDATE -->
+        <kg.apc.jmeter.samplers.GRPCSampler guiclass="kg.apc.jmeter.samplers.GRPCSamplerGui" testclass="kg.apc.jmeter.samplers.GRPCSampler" testname="Update Reservation gRPC">
+          <stringProp name="hostname">localhost</stringProp>
+          <stringProp name="port">9090</stringProp>
+          <stringProp name="protoFile">proto/reservation.proto</stringProp>
+          <stringProp name="serviceName">ReservationService</stringProp>
+          <stringProp name="methodName">UpdateReservation</stringProp>
+          <stringProp name="request">{
+            "id": ${reservationId},
+            "preferences": "Updated reservation ${__threadNum}",
+            "clientId": 1,
+            "chambreId": 1,
+            "dateDebut": "2024-12-11",
+            "dateFin": "2024-12-13"
+          }</stringProp>
+          <stringProp name="deadline">5000</stringProp>
+          <boolProp name="useTls">false</boolProp>
+        </kg.apc.jmeter.samplers.GRPCSampler>
+        <hashTree/>
+
+        <!-- Constant Timer -->
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait">
+          <stringProp name="ConstantTimer.delay">1000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+
+        <!-- DELETE -->
+        <kg.apc.jmeter.samplers.GRPCSampler guiclass="kg.apc.jmeter.samplers.GRPCSamplerGui" testclass="kg.apc.jmeter.samplers.GRPCSampler" testname="Delete Reservation gRPC">
+          <stringProp name="hostname">localhost</stringProp>
+          <stringProp name="port">9090</stringProp>
+          <stringProp name="protoFile">proto/reservation.proto</stringProp>
+          <stringProp name="serviceName">ReservationService</stringProp>
+          <stringProp name="methodName">DeleteReservation</stringProp>
+          <stringProp name="request">{
+            "id": ${reservationId}
+          }</stringProp>
+          <stringProp name="deadline">5000</stringProp>
+          <boolProp name="useTls">false</boolProp>
+        </kg.apc.jmeter.samplers.GRPCSampler>
+        <hashTree/>
+
+        <!-- Results -->
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">true</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>true</responseData>
+              <samplerData>true</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>true</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

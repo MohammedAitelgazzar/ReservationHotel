@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/public/", "/api/login",
                                 "/api/register", "/api/reservations/",
                                 "/api/chambres", "/api/clients",
-                                "/services/", "/services/ws/","/graphiql/","/graphql/").permitAll() // Permet l'accès sans authentification
+                                "/services/", "/services/ws/","/graphiql/","/graphql/","/actuator/**").permitAll() // Permet l'accès sans authentification
                         //.anyRequest().authenticated() // Toute autre requête nécessite une authentification
                         .anyRequest().permitAll()
                 )

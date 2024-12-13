@@ -62,6 +62,32 @@ public class ReservationSoap {
         return reservationRepository.save(reservation);
     }
 
+    @WebMethod
+    public Reservation updateReservation(
+            @WebParam(name = "id") Long id,
+            @WebParam(name = "preferences") String preferences,
+            @WebParam(name = "clientId") Long clientId,
+            @WebParam(name = "chambreId") Long chambreId
+    ) {
+        Reservation existingReservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation with ID " + id + " not found"));
+
+        Client client = reservationRepository.findClientById(clientId);
+        if (client == null) {
+            throw new IllegalArgumentException("Client with ID " + clientId + " not found");
+        }
+
+        Chambre chambre = reservationRepository.findChambreById(chambreId);
+        if (chambre == null) {
+            throw new IllegalArgumentException("Chambre with ID " + chambreId + " not found");
+        }
+
+        existingReservation.setPreferences(preferences);
+        existingReservation.setClient(client);
+        existingReservation.setChambre(chambre);
+
+        return reservationRepository.save(existingReservation); 
+    }
 
     @WebMethod
     public boolean deleteReservation(@WebParam(name = "id") Long id) {
